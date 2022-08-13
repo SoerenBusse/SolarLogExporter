@@ -3,7 +3,7 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:6.0 AS publish
 WORKDIR /src
 COPY src/SolarLogExporter/SolarLogExporter.csproj SolarLogExporter/
 WORKDIR /src/SolarEdgeExporter
