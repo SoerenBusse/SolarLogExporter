@@ -61,7 +61,7 @@ public class DevicePollingService : IHostedService, IDisposable
                 await _influxService.PushSolarLogMeasurement(_solarLogService.SolarLogMeasurement);
             }
         }
-        catch (ReadProductionException e)
+        catch (Exception e)
         {
             _logger.LogError(e.Message);
         }
