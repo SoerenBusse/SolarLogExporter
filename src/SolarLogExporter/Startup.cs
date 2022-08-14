@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using SolarLogExporter.Options;
 using SolarLogExporter.Services;
 
@@ -22,10 +23,17 @@ public class Startup
             .ValidateDataAnnotations();
 
         services.AddHttpClient();
-        
+
+        // API Endpoints
+        services.AddControllers().AddXmlSerializerFormatters().AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.WriteIndented = true;
+            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        });
+
         services.AddSingleton<InfluxService>();
         services.AddSingleton<SolarLogService>();
-        
+
         // Add polling service
         services.AddHostedService<DevicePollingService>();
     }
@@ -38,6 +46,8 @@ public class Startup
         {
             // Info text for web requests
             endpoint.MapGet("/", context => context.Response.WriteAsync("SolarLog Exporter"));
+
+            endpoint.MapControllers();
         });
     }
 }

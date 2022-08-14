@@ -43,8 +43,11 @@ public class InfluxService : IDisposable
         // Create data points for each inverter
         pointData.AddRange(solarLogMeasurement.Inverters.Select(inverter => BasePoint(location)
             .Tag("name", inverter.Name)
-            .Tag("maxAcPower", inverter.MaxAcPower.ToString())
             .Field("inverterAcPower", inverter.AcPower)));
+        
+        pointData.AddRange(solarLogMeasurement.Inverters.Select(inverter => BasePoint(location)
+            .Tag("name", inverter.Name)
+            .Field("maxAcPower", inverter.MaxAcPower)));
 
         await _writeApiAsync.WritePointsAsync(pointData, _influxOptions.Value.Bucket,
             _influxOptions.Value.Organisation);

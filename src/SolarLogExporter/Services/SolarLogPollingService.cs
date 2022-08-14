@@ -51,12 +51,11 @@ public class DevicePollingService : IHostedService, IDisposable
         _logger.LogDebug("Polling SolarLog...");
 
         // Read the current production of the solar system
-
         try
         {
             await _solarLogService.ReadCurrentProduction();
 
-            // Add result to influx db if we got some
+            // Add result to influx db if we got some data
             if (_solarLogService.SolarLogMeasurement != null)
             {
                 await _influxService.PushSolarLogMeasurement(_solarLogService.SolarLogMeasurement);
@@ -67,8 +66,7 @@ public class DevicePollingService : IHostedService, IDisposable
             _logger.LogError(e.Message);
         }
     }
-
-
+    
     public void Dispose()
     {
         _timer?.Dispose();
