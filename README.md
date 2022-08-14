@@ -21,7 +21,7 @@ solarlog-exporter:
   environment:
     - "SOLARLOG__URL=http://solarlog-server"
     - "SOLARLOG__LOCATION=House" # Will be added as a tag in the Influx datapoints
-    - "INFLUX_URL=https://influxdb.domain.tld"
+    - "INFLUX__URL=https://influxdb.domain.tld"
     - "INFLUX__BUCKET=Solar"
     - "INFLUX__ORGANISATION=MyOrganization"
     - "INFLUX__TOKEN=<TOKEN>
