@@ -1,4 +1,5 @@
 using InfluxDB.Client;
+using InfluxDB.Client.Api.Domain;
 using InfluxDB.Client.Writes;
 using Microsoft.Extensions.Options;
 using SolarLogExporter.Models;
@@ -32,22 +33,27 @@ public class InfluxService : IDisposable
             throw new ArgumentException("Location of SolarLogMeasurement cannot be null");
         }
 
-        var location = solarLogMeasurement.Location;
+        DateTime timestamp = DateTime.UtcNow;
 
-        // Create data points
         var pointData = new List<PointData>();
 
-        pointData.Add(BasePoint(location).Field("totalAcPower", solarLogMeasurement.TotalAcPower));
-        pointData.Add(BasePoint(location).Field("totalDcPower", solarLogMeasurement.TotalDcPower));
+        pointData.Add(PointData
+            .Measurement("solarlog_total")
+            .Timestamp(timestamp, WritePrecision.S)
+            .Tag("location", solarLogMeasurement.Location)
+            .Field("ac_power", solarLogMeasurement.TotalAcPower)
+            .Field("dc_power", solarLogMeasurement.TotalDcPower));
+
+        var solarLogInverter = PointData
+            .Measurement("solarlog_inverter")
+            .Timestamp(timestamp, WritePrecision.S)
+            .Tag("location", solarLogMeasurement.Location);
 
         // Create data points for each inverter
-        pointData.AddRange(solarLogMeasurement.Inverters.Select(inverter => BasePoint(location)
+        pointData.AddRange(solarLogMeasurement.Inverters.Select(inverter => solarLogInverter
             .Tag("name", inverter.Name)
-            .Field("inverterAcPower", inverter.AcPower)));
-        
-        pointData.AddRange(solarLogMeasurement.Inverters.Select(inverter => BasePoint(location)
-            .Tag("name", inverter.Name)
-            .Field("maxAcPower", inverter.MaxAcPower)));
+            .Field("ac_power", inverter.AcPower)
+            .Field("max_ac_power", inverter.MaxAcPower)));
 
         await _writeApiAsync.WritePointsAsync(pointData, _influxOptions.Value.Bucket,
             _influxOptions.Value.Organisation);
