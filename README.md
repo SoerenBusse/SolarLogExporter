@@ -21,13 +21,13 @@ solarlog-exporter:
   environment:
     - "SOLARLOG__URL=http://solarlog-server"
     - "SOLARLOG__LOCATION=House" # Will be added as a tag in the Influx datapoints
-    - "INFLUX_URL=https://influxdb.domain.tld"
-    - "INFLUX_BUCKET=Solar"
-    - "INFLUX_ORGANISATION=MyOrganization"
-    - "INFLUX_TOKEN=<TOKEN>
+    - "INFLUX__URL=https://influxdb.domain.tld"
+    - "INFLUX__BUCKET=Solar"
+    - "INFLUX__ORGANISATION=MyOrganization"
+    - "INFLUX__TOKEN=<TOKEN>
     # Default value 15 seconds. More doesn't make sense, 
     # because SolarLog doesn't update the date more often.
-    - "POLLING_INTERVALSECONDS=15" 
+    - "POLLING__INTERVALSECONDS=15" 
   restart: always
 ```
 
